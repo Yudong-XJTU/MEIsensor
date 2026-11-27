@@ -117,9 +117,10 @@ sbatch demo/run_demo.sbatch
 See `CHANGELOG.md` for the annotation revision history.
 
 ## Acknowledgements
+
 We are grateful to the Human Genome Structural Variation Consortium (HGSVC) for the long-read benchmark data and sample materials, to the Genome in a Bottle (GIAB) consortium for the GRCh38 segmental-duplication and centromere annotations used to define complex regions, and to UCSC for the hg38 reference genome.
 
-MEIsensor builds on excellent open-source software, including minimap2, hifiasm, SVIM-asm, SVAN, Tandem Repeats Finder, RepeatMasker, Dfam, PyTorch, pysam, NumPy, pandas, matplotlib and logomaker. We thank their developers and maintainers for making these tools available.
+MEIsensor builds on excellent open-source software, including minimap2, hifiasm, SVIM-asm, SVAN, Tandem Repeats Finder, RepeatMasker and Dfam. We thank their developers and maintainers for making these tools available.
 
 We also thank colleagues and users who tested early versions of MEIsensor and provided feedback that helped improve the tool.
 
