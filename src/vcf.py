@@ -120,14 +120,29 @@ class VCF:
         self.write_header_line('INFO=<ID=VAF,Number=1,Type=Float,Description="Fraction of supporting reads">')
         self.write_header_line('INFO=<ID=NM,Number=.,Type=Float,Description="Mismatch rate of supporting alignments">')
         if self.config.annotate:
-            self.write_header_line('INFO=<ID=EN_MOTIF,Number=1,Type=String,Description="L1 endonuclease cleavage '
-                                   'consensus near the insertion point (5\'-TTTT/AA-3\' on the nicked strand), '
-                                   'reported as T-tract/A-tract; absent when no T/A junction is found">')
+            self.write_header_line('INFO=<ID=EN_MOTIF,Number=1,Type=String,Description="EN cleavage motif at the '
+                                   'TSD boundary: 6-bp core (positions -4..-1 and +1..+2) reported as '
+                                   'T-tract/A-tract on the nicked strand; absent when no exact TSD (>=4 bp) or '
+                                   'no poly(A) strand is available">')
             self.write_header_line('INFO=<ID=EN_STRAND,Number=1,Type=String,Description="Strand carrying the EN '
-                                   'cleavage motif (+ or -)">')
-            self.write_header_line('INFO=<ID=EN_OFFSET,Number=1,Type=Integer,Description="Signed distance in bp '
-                                   'between the EN cleavage junction and the insertion point (negative = junction '
-                                   'upstream of the insertion point)">')
+                                   'nick at the TSD boundary (+ or -)">')
+            self.write_header_line('INFO=<ID=EN_OFFSET,Number=1,Type=Integer,Description="Offset in bp between '
+                                   'the EN junction and the TSD boundary (0 under the TSD-anchored definition)">')
+            self.write_header_line('INFO=<ID=TSD_LEN,Number=1,Type=Integer,Description="Target-site duplication '
+                                   'length: longest exact (0-mismatch) match between the inserted sequence and the '
+                                   'reference immediately flanking the insertion, requiring at least 4 bp; 0 when '
+                                   'no duplication is detected">')
+            self.write_header_line('INFO=<ID=TSD_SEQ,Number=1,Type=String,Description="Target-site duplication '
+                                   'sequence (exact match, no mismatches); absent when TSD_LEN=0">')
+            self.write_header_line('INFO=<ID=POLYA_LEN,Number=1,Type=Integer,Description="poly(A) tail length of '
+                                   'the inserted sequence after removal of the TSD: terminal A-rich (3\' end) or '
+                                   'T-rich (5\' end) tract of at least 10 bp with at least 80% purity in every '
+                                   '10-bp window; 0 when no tail is detected">')
+            self.write_header_line('INFO=<ID=POLYA_SEQ,Number=1,Type=String,Description="poly(A/T) tract sequence '
+                                   'as found in the inserted sequence; absent when POLYA_LEN=0">')
+            self.write_header_line('INFO=<ID=POLYA_STRAND,Number=1,Type=String,Description="Orientation of the '
+                                   'poly(A) tract: + if A-rich at the 3\' end of the inserted sequence, - if '
+                                   'T-rich at the 5\' end">')
         samples_header = "\t".join(sample_id for _, sample_id in self.config.sample_ids_vcf)
         self.write_raw(f"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t{samples_header}")
         
@@ -182,16 +197,25 @@ class VCF:
             if ac == 0:
                 call.filter = "GT"
 
-        # EN motif: L1 endonuclease cleavage consensus at the insertion site.
-        # Must run before the INFO string is assembled below, so the fields land
-        # in call.info in time.
         if (self.config.annotate and call.svtype == "INS" and call.alt != '<INS>'
                 and self.reference_handle is not None):
-            en_hit = annotate.find_en_motif(self.reference_handle, call.contig, pos, self.config.en_motif_window)
-            if en_hit is not None:
-                call.set_info("EN_MOTIF", en_hit[0])
-                call.set_info("EN_STRAND", en_hit[1])
-                call.set_info("EN_OFFSET", en_hit[2])
+            # Strict TSD, poly(A/T) and TSD-anchored EN motif annotation, computed by
+            # MEIsensor itself from the reference genome and the inserted sequence
+            # (no external annotation tool). call.alt is the inserted sequence; the
+            # written ALT is call.ref + call.alt.
+            hit = annotate.annotate_insertion(self.reference_handle, call.contig, pos, call.alt)
+            if hit is not None:
+                call.set_info("TSD_LEN", hit['tsd_len'])
+                if hit['tsd_len']:
+                    call.set_info("TSD_SEQ", hit['tsd_seq'])
+                call.set_info("POLYA_LEN", hit['polya_len'])
+                if hit['polya_len']:
+                    call.set_info("POLYA_SEQ", hit['polya_seq'])
+                    call.set_info("POLYA_STRAND", hit['polya_strand'])
+                if hit['en_motif']:
+                    call.set_info("EN_MOTIF", hit['en_motif'])
+                    call.set_info("EN_STRAND", hit['en_strand'])
+                    call.set_info("EN_OFFSET", hit['en_offset'])
 
         # Output core SV attributes
         infos = {

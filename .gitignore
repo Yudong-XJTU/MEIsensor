@@ -7,10 +7,20 @@ cache/
 
 # local test outputs and run artifacts (not part of the release)
 test_output/
-*.svan_work/
 memory-*.csv
 smoke.MEI.vcf*
 final.MEI.vcf*
+runs/*/driver.out
+runs/*/logs/*.tmp
+
+# local virtualenvs
+.venv/
+venv/
+
+# editor / backup files
+*.orig
+*.bak
+*~
 
 # local leftover of the previous major version
 MEIsensor(V1.0)/
