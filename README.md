@@ -13,8 +13,8 @@ MEIsensor extracts split-read and inline insertion signals from a coordinate-sor
 Tested on Linux with Python 3.10–3.12 and PyTorch 2.7–2.11 (CUDA 12.8) and an NVIDIA GPU. The 2026-11-27 reference run used Python 3.12.3, PyTorch 2.11.0+cu128, pysam 0.22.0, numpy 1.26.4 and pandas 2.1.4 (RTX 5060 Ti).
 
 ```bash
-git clone https://github.com/Yudong-XJTU/MEIsensor-release.git
-cd MEIsensor-release
+git clone https://github.com/Yudong-XJTU/MEIsensor.git
+cd MEIsensor
 ```
 
 With CUDA 12.8 or higher:
