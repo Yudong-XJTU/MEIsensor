@@ -118,8 +118,7 @@ See `CHANGELOG.md` for the annotation revision history.
 
 ## Acknowledgements
 
-The design of the INS discovery logic was inspired by Sniffles2
-(https://github.com/fritzsedlazeck/Sniffles).
+The candidate insertion extraction logic was inspired by Sniffles2 (https://github.com/fritzsedlazeck/Sniffles).
 
 ## License
 
