@@ -116,6 +116,11 @@ sbatch demo/run_demo.sbatch
 
 See `CHANGELOG.md` for the annotation revision history.
 
+## Acknowledgements
+
+The design of the INS discovery logic was inspired by Sniffles2
+(https://github.com/fritzsedlazeck/Sniffles).
+
 ## License
 
 MEIsensor is released under the MIT License. See [LICENSE](LICENSE) for the full text.
