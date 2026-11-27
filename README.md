@@ -124,10 +124,10 @@ MEIsensor builds on excellent open-source software, including minimap2, hifiasm,
 
 We also thank colleagues and users who tested early versions of MEIsensor and provided feedback that helped improve the tool.
 
-The candidate insertion extraction logic was inspired by Sniffles2 (https://github.com/fritzsedlazeck/Sniffles). We thank the Sniffles2 developers for making their implementation openly available.
+The candidate insertion extraction logic was adapted from Sniffles2 (https://github.com/fritzsedlazeck/Sniffles), Copyright (c) 2021- Moritz Smolka, 2023- Hermann Romanek, under the MIT License. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for the third-party notices.
 
 ## License
 
-MEIsensor is released under the MIT License. See [LICENSE](LICENSE) for the full text.
+MEIsensor is released under the MIT License. See [LICENSE](LICENSE) for the full text and [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) for third-party notices.
 
 Copyright (c) 2026 Yudong Wang, Kai Ye, Xiaofei Yang, and Xi'an Jiaotong University.
